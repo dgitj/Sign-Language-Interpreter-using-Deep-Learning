@@ -8,7 +8,7 @@ def get_image_size():
 gestures = os.listdir('gestures/')
 gestures.sort(key = int)
 begin_index = 0
-end_index = 5
+end_index = 5 
 image_x, image_y = get_image_size()
 
 if len(gestures)%5 != 0:

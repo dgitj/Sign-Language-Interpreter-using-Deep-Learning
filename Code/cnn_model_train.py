@@ -1,18 +1,21 @@
 import numpy as np
 import pickle
 import cv2, os
+import keras
 from glob import glob
 from keras import optimizers
-from keras.models import Sequential
+from keras import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import Flatten
-from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
-from keras.utils import np_utils
+from keras.layers import Conv2D
+from keras.layers import MaxPooling2D
+from keras import utils
 from keras.callbacks import ModelCheckpoint
 from keras import backend as K
-K.set_image_dim_ordering('tf')
+#from importlib import reload
+#reload(keras.models)
+#K.set_image_dim_ordering('tf')
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -60,17 +63,17 @@ def train():
 
 	train_images = np.reshape(train_images, (train_images.shape[0], image_x, image_y, 1))
 	val_images = np.reshape(val_images, (val_images.shape[0], image_x, image_y, 1))
-	train_labels = np_utils.to_categorical(train_labels)
-	val_labels = np_utils.to_categorical(val_labels)
+	train_labels_bin = utils.to_categorical(train_labels)
+	val_labels_bin = utils.to_categorical(val_labels)
 
-	print(val_labels.shape)
+	print(val_labels_bin.shape)
 
 	model, callbacks_list = cnn_model()
 	model.summary()
-	model.fit(train_images, train_labels, validation_data=(val_images, val_labels), epochs=15, batch_size=500, callbacks=callbacks_list)
-	scores = model.evaluate(val_images, val_labels, verbose=0)
+	model.fit(train_images, train_labels_bin, validation_data=(val_images, val_labels_bin), epochs=15, batch_size=500, callbacks=callbacks_list)
+	scores = model.evaluate(val_images, val_labels_bin, verbose=0)
 	print("CNN Error: %.2f%%" % (100-scores[1]*100))
-	#model.save('cnn_model_keras2.h5')
+	model.save('cnn_model_keras2.h5')
 
 train()
-K.clear_session();
+K.clear_session()
